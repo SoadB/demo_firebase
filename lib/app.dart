@@ -1,6 +1,7 @@
 import 'package:demofirebase/pages/home.dart';
 import 'package:demofirebase/pages/login.dart';
 import 'package:demofirebase/pages/register.dart';
+import 'package:demofirebase/services/auth.dart';
 import 'package:flutter/material.dart';
 
 class DemoApp extends StatelessWidget {
@@ -25,20 +26,30 @@ class DemoApp extends StatelessWidget {
                 builder: (context) => RegisterPage(), fullscreenDialog: true);
         }
       },
-
       home: Landing(),
     );
   }
 }
 
 class Landing extends StatelessWidget {
-  final user = null;
   @override
   Widget build(BuildContext context) {
-    if (user == null) {
-      return LoginPage();
-    } else {
-      return MyHomePage();
-    }
+    return FutureBuilder(
+      future: AuthService().currentUser(),
+      // ignore: missing_return
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return MyHomePage();
+        } else if (snapshot.hasError) {
+          return Text(snapshot.error);
+        } else if (snapshot.connectionState == ConnectionState.waiting) {
+          return Scaffold(
+            body: CircularProgressIndicator(),
+          );
+        } else {
+          return LoginPage();
+        }
+      },
+    );
   }
 }
