@@ -14,8 +14,9 @@ class StorageService {
     uploadTask.events.listen((event) {
       print(event.type);
     });
-    storageReference
-        .getDownloadURL()
-        .then((url) => DBService().updateUserDoc(image: url));
+    await uploadTask.onComplete;
+    final url = await storageReference
+        .getDownloadURL();
+    DBService().updateUserDoc(image: url);
   }
 }

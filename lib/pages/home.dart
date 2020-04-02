@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:demofirebase/services/auth.dart';
 import 'package:demofirebase/services/databse.dart';
 import 'package:demofirebase/services/storage.dart';
@@ -41,54 +39,57 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: CircularProgressIndicator(),
               );
             }
-            return StreamBuilder(
-              stream: db.getUserDoc(user.data.uid),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      CircleAvatar(
-                          maxRadius: 50,
-                          backgroundImage: snapshot.data['image'] == null
-                              ? AssetImage('assets/placeholder.jpg')
-                              : NetworkImage(snapshot.data['image'])),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        'Hello ${snapshot.data['name']}',
-                        style: TextStyle(fontSize: 20),
-                      ),
-                      SizedBox(
-                        height: 50,
-                      ),
-                      RaisedButton(
-                        child: Text('Upload new image'),
-                        color: Theme.of(context).primaryColor,
-                        onPressed: () async {
-                          await getImage();
-                          setState(() {
-                            db = DBService();
-                          });
-                        },
-                      ),
-                      RaisedButton(
-                        child: Text('Sign Out'),
-                        onPressed: () {
-                          auth.signOut();
-                          Navigator.of(context).pushReplacementNamed('/login');
-                        },
-                      ),
-                    ],
-                  ),
-                );
-              },
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                StreamBuilder(
+                    stream: db.getUserDoc(user.data.uid),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData ||
+                          snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else {
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              CircleAvatar(
+                                backgroundImage: snapshot.data['image'] == null
+                                    ? AssetImage('assets/placeholder.jpg')
+                                    : NetworkImage(snapshot.data['image']),
+                                radius: 50,
+                              ),
+                              SizedBox(height: 30),
+                              Text(
+                                'Hello ${snapshot.data['name']}',
+                                style: TextStyle(fontSize: 20),
+                              ),
+                              SizedBox(height: 70),
+                            ],
+                          ),
+                        );
+                      }
+                    }),
+                RaisedButton(
+                  child: Text('Upload new image'),
+                  color: Theme.of(context).primaryColor,
+                  onPressed: () async {
+                    await getImage();
+                    setState(() {
+                      db = DBService();
+                    });
+                  },
+                ),
+                RaisedButton(
+                  child: Text('Sign Out'),
+                  onPressed: () {
+                    auth.signOut();
+                    Navigator.of(context).pushReplacementNamed('/login');
+                  },
+                ),
+              ],
             );
           }),
     );
