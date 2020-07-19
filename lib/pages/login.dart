@@ -41,6 +41,15 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  Future onGoogleLogin() async {
+
+        //TODO 2: Try to login user with google when the button is pressed, using the AuthService!
+
+        //TODO 3: Display a SnackBar in case of errors!
+
+  }
+  
+  
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +71,7 @@ class _LoginPageState extends State<LoginPage> {
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 50),
+            //TODO:1 add a "LOGIN WITH GOOGLE" button!
             TextField(
               decoration: InputDecoration(
                 hintText: 'Email',

@@ -1,9 +1,12 @@
 import 'package:demofirebase/services/databse.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+//TODO 5: import google-sign-in
 
 class AuthService {
   final _fb = FirebaseAuth.instance;
   final db = DBService();
+
+  //TODO 4: Make an instance of GoogleSignIn
 
   Future currentUser() async {
     return await _fb.currentUser();
@@ -25,6 +28,15 @@ class AuthService {
       await _fb.signInWithEmailAndPassword(email: email, password: password);
     } catch (e) {
       rethrow;
+    }
+  }
+
+  Future loginWithGoogle() async {
+    try {
+      //TODO 6: Implement Google Sign In
+    } catch (e) {
+      //TODO 7: rethrow the exception
+      //     rethrow;
     }
   }
 
