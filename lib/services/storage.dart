@@ -1,7 +1,7 @@
 import 'package:demofirebase/services/auth.dart';
 import 'package:demofirebase/services/databse.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:path/path.dart' as Path;
+import 'package:path/path.dart' as path;
 
 class StorageService {
   const StorageService();

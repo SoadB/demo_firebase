@@ -26,20 +26,21 @@ class _LoginPageState extends State<LoginPage> {
     ));
   }
 
-  void onLogin() {
+  Future onLogin() async {
     if (email.isNotEmpty && password.isNotEmpty) {
       updateLoading();
-      AuthService()
-          .loginWithEmail(email, password)
-          .then((value) => Navigator.of(context).pushReplacementNamed('/'))
-          .catchError((error) {
+      try {
+        await AuthService().loginWithEmail(email, password);
+        Navigator.of(context).pushReplacementNamed('/');
+      } catch (e) {
         updateLoading();
-        showSnackBar(error.message);
-      });
+        showSnackBar(e.message);
+      }
     } else {
       showSnackBar('Email & password fields cannot be empty.');
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -48,10 +49,9 @@ class _LoginPageState extends State<LoginPage> {
       appBar: AppBar(
         title: Text('Login'),
       ),
-      body: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 30),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+      body: Center(
+        child: ListView(
+          padding: EdgeInsets.all(30),
           children: <Widget>[
             Text(
               'Welcome again!',
@@ -59,6 +59,7 @@ class _LoginPageState extends State<LoginPage> {
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
+              textAlign: TextAlign.center,
             ),
             SizedBox(height: 50),
             TextField(
@@ -85,20 +86,18 @@ class _LoginPageState extends State<LoginPage> {
             ),
             SizedBox(height: 20),
             Container(
-              child: isLoading
-                ? Container(
-              child: CircularProgressIndicator(),
-              width: 35,
-            )
-                : RaisedButton(
-              child: Text('Login'),
-              color: Theme.of(context).primaryColor,
-              onPressed: onLogin,
-            ),
+              child: RaisedButton(
+                child: Text('Login'),
+                color: Theme.of(context).primaryColor,
+                onPressed: isLoading ? null : onLogin,
+              ),
               height: 35,
             ),
             SizedBox(height: 60),
-            Text('Don\'t have account yet?'),
+            Text(
+              'Don\'t have account yet?',
+              textAlign: TextAlign.center,
+            ),
             FlatButton(
               child: Text(
                 'Register',
@@ -109,7 +108,7 @@ class _LoginPageState extends State<LoginPage> {
               highlightColor: Colors.amber[100],
               splashColor: Colors.amber[50],
               onPressed: () {
-                Navigator.of(context).pushReplacementNamed('/register');
+                Navigator.of(context).pushNamed('/register');
               },
             )
           ],

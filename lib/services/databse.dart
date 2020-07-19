@@ -4,11 +4,15 @@ import 'package:demofirebase/services/auth.dart';
 class DBService {
   const DBService();
 
-  createUserDoc(String email, String name, String uid) {
-    Firestore.instance
-        .collection('users')
-        .document(uid)
-        .setData({'email': email, 'name': name, 'uid': uid});
+  Future createUserDoc(String email, String name, String uid, {image}) async {
+    final doc =
+        await Firestore.instance.collection('users').document(uid).get();
+    final docExist = doc.exists;
+    if (!docExist)
+      Firestore.instance
+          .collection('users')
+          .document(uid)
+          .setData({'email': email, 'name': name, 'uid': uid, if(image != null) 'image': image});
   }
 
   Stream getUserDoc(uid) {
@@ -17,7 +21,7 @@ class DBService {
 
   Future updateUserDoc({image}) async {
     final user = await AuthService().currentUser();
-    return Firestore.instance
+    return await Firestore.instance
         .collection('users')
         .document(user.uid)
         .updateData({

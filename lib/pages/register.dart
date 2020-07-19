@@ -34,17 +34,9 @@ class _RegisterPageState extends State<RegisterPage> {
     if (email.isNotEmpty && password.isNotEmpty && name.isNotEmpty) {
       updateLoading();
 
-      auth.registerWithEmail(email, password).then((value) async {
-
-        //gets the current user which just registered
-        final user = await auth.currentUser();
-
-        //adds our user to firestore
-        await db.createUserDoc(email, name, user.uid);
-
+      auth.registerWithEmail(email, password, name).then((value) async {
         //pushes the homepage
         Navigator.of(context).pushReplacementNamed('/');
-
       }).catchError((error) {
         updateLoading();
         showSnackBar(error.message);
@@ -61,10 +53,8 @@ class _RegisterPageState extends State<RegisterPage> {
       appBar: AppBar(
         title: const Text('Register'),
       ),
-      body: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 30),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+      body:  ListView(
+        padding: const EdgeInsets.all(30),
           children: <Widget>[
             const Text(
               'New Account',
@@ -72,6 +62,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
+              textAlign: TextAlign.center,
             ),
             const SizedBox(height: 50),
             TextField(
@@ -105,16 +96,11 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
             const SizedBox(height: 20),
             Container(
-              child: isLoading
-                  ? Container(
-                      child: CircularProgressIndicator(),
-                      width: 35,
-                    )
-                  : RaisedButton(
-                      child: Text('Register'),
-                      color: Theme.of(context).primaryColor,
-                      onPressed: onRegister,
-                    ),
+              child: RaisedButton(
+                child: Text('Register'),
+                color: Theme.of(context).primaryColor,
+                onPressed: isLoading ? null : onRegister,
+              ),
               height: 35,
             ),
             const SizedBox(height: 60),
@@ -128,12 +114,12 @@ class _RegisterPageState extends State<RegisterPage> {
               highlightColor: Colors.amber[100],
               splashColor: Colors.amber[50],
               onPressed: () {
-                Navigator.of(context).pushReplacementNamed('/login');
+                Navigator.of(context).pop();
               },
             )
           ],
         ),
-      ),
+      
     );
   }
 }
