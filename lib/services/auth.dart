@@ -31,10 +31,6 @@ class AuthService {
     }
   }
 
-  Future loginWithGoogle() async {
-    //TODO Implement Google Login here
-  }
-
   Future signOut() async {
     await fb.signOut();
   }
