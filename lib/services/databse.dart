@@ -1,31 +1,26 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:demofirebase/services/auth.dart';
 
 class DBService {
-  const DBService();
+  const DBService._();
 
-  Future createUserDoc(String email, String name, String uid, {image}) async {
+  static final DBService instance = DBService._();
+
+  Future createUserDoc(String email, String name, String uid) async {
     final doc =
         await Firestore.instance.collection('users').document(uid).get();
     final docExist = doc.exists;
+
+    //this is to create a new doc only if it doesn't exist before
     if (!docExist)
-      Firestore.instance
-          .collection('users')
-          .document(uid)
-          .setData({'email': email, 'name': name, 'uid': uid, if(image != null) 'image': image});
+      Firestore.instance.collection('users').document(uid).setData({
+        'email': email,
+        'name': name,
+        'uid': uid,
+      });
   }
 
-  Stream getUserDoc(uid) {
-    return Firestore.instance.collection('users').document(uid).snapshots();
+  Future getUserDoc(uid) {
+    return Firestore.instance.collection('users').document(uid).get();
   }
 
-  Future updateUserDoc({image}) async {
-    final user = await AuthService().currentUser();
-    return await Firestore.instance
-        .collection('users')
-        .document(user.uid)
-        .updateData({
-      'image': image,
-    });
-  }
 }

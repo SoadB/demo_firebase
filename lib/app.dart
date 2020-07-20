@@ -13,17 +13,21 @@ class DemoApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.amber,
       ),
-      // ignore: missing_return
+      //declaring some routes to use them by name later
       onGenerateRoute: (RouteSettings settings) {
         switch (settings.name) {
           case "/":
             return MaterialPageRoute(builder: (context) => MyHomePage());
           case "/login":
             return MaterialPageRoute(
-                builder: (context) => LoginPage(), fullscreenDialog: true);
+              builder: (context) => LoginPage(),
+              fullscreenDialog: true,
+            );
           case "/register":
             return MaterialPageRoute(
-                builder: (context) => RegisterPage(), fullscreenDialog: true);
+              builder: (context) => RegisterPage(),
+              fullscreenDialog: true,
+            );
         }
       },
       home: Landing(),
@@ -35,9 +39,9 @@ class Landing extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: AuthService().currentUser(),
-      // ignore: missing_return
+      future: AuthService.instance.currentUser,
       builder: (context, snapshot) {
+        print(snapshot.data);
         if (snapshot.hasData) {
           return MyHomePage();
         } else if (snapshot.hasError) {
